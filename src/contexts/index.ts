@@ -1,2 +1,2 @@
-export { UIContext } from './UIContext';
-export { UIProvider } from './UIContext';
+export { EntryContext, EntryProvider } from './EntryContext';
+export { UIContext, UIProvider } from './UIContext';

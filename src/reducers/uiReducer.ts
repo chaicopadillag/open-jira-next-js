@@ -12,6 +12,16 @@ export const uiReducer = (uiState: UIStateType, action: UIActionType): UIStateTy
         ...uiState,
         sidebarIsOpen: false,
       };
+    case 'IS_ADDING':
+      return {
+        ...uiState,
+        isAdding: action.payload,
+      };
+    case 'IS_DRAGGING':
+      return {
+        ...uiState,
+        isDragging: action.payload,
+      };
 
     default:
       return uiState;
