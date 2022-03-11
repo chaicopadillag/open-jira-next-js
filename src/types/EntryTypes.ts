@@ -11,6 +11,6 @@ export type EntryStateType = {
 };
 
 export type EntryActionType = {
-  type: 'ADD_ENTRY' | 'UPDATE_ENTRY';
-  payload: Entry;
+  type: 'SET_ENTRIES' | 'ADD_ENTRY' | 'UPDATE_ENTRY';
+  payload: Entry | Entry[];
 };

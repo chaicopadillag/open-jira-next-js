@@ -1,3 +1,4 @@
+import { Entry } from '../interfaces';
 import { EntryActionType, EntryStateType } from '../types/EntryTypes';
 
 export const entrieReducer = (state: EntryStateType, action: EntryActionType): EntryStateType => {
@@ -5,21 +6,26 @@ export const entrieReducer = (state: EntryStateType, action: EntryActionType): E
     case 'ADD_ENTRY':
       return {
         ...state,
-        entries: [...state.entries, action.payload],
+        entries: [...(<Entry[]>state.entries), <Entry>action.payload],
       };
     case 'UPDATE_ENTRY':
       return {
         ...state,
         entries: state.entries.map((entry) => {
-          if (entry._id === action.payload._id) {
+          if (entry._id === (<Entry>action.payload)._id) {
             return {
               ...entry,
-              status: action.payload.status,
-              description: action.payload.description,
+              status: (<Entry>action.payload).status,
+              description: (<Entry>action.payload).description,
             };
           }
           return entry;
         }),
+      };
+    case 'SET_ENTRIES':
+      return {
+        ...state,
+        entries: <Entry[]>action.payload,
       };
 
     default:

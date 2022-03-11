@@ -1,31 +1,11 @@
-import { createContext, FC, useReducer } from 'react';
-import { v4 as uuid } from 'uuid';
+import { createContext, FC, useEffect, useReducer } from 'react';
 import { Entry } from '../interfaces';
 import { entrieReducer } from '../reducers';
+import { entryService } from '../services';
 import { EntryContextState } from '../types/EntryTypes';
 
 const EntryInitialState: EntryContextState = {
-  entries: [
-    {
-      _id: uuid(),
-      description: 'Quo quibusdam tempore quae quaerat. Occaecati esse praesentium eum autem ex sed dolores voluptates. Sapiente repellendus molestiae velit saepe assumenda.',
-      status: 'pending',
-      createdAt: Date.now(),
-    },
-    {
-      _id: uuid(),
-      description:
-        'Dignissimos eos optio vel mollitia qui. Quis vero provident. Et corrupti minus quo voluptatem corporis illo sint nihil. Aut et nostrum dolorem omnis. Perspiciatis vitae dolor itaque voluptatem. Saepe omnis sit a et voluptatum ex maxime.',
-      status: 'inProgress',
-      createdAt: Date.now() - 1000000,
-    },
-    {
-      _id: uuid(),
-      description: 'Maiores et ut est. Corrupti totam est nisi id voluptatem dolorum et. Ratione sint alias sit saepe aliquam dolore.',
-      status: 'finished',
-      createdAt: Date.now() - 2000000,
-    },
-  ],
+  entries: [],
   addEntry: (description: string) => {},
   updateEntry: (entry: Entry) => {},
 };
@@ -35,17 +15,29 @@ export const EntryContext = createContext<EntryContextState>({} as EntryContextS
 export const EntryProvider: FC = ({ children }) => {
   const [state, dispatch] = useReducer(entrieReducer, EntryInitialState);
 
-  const addEntry = (description: string) => {
-    const entry: Entry = {
-      _id: uuid(),
-      description,
-      status: 'pending',
-      createdAt: Date.now(),
-    };
-    dispatch({ type: 'ADD_ENTRY', payload: entry });
+  const addEntry = async (description: string) => {
+    const { data } = await entryService.post<Entry>('/entry', { description });
+    dispatch({ type: 'ADD_ENTRY', payload: data });
   };
 
-  const updateEntry = (entry: Entry) => dispatch({ type: 'UPDATE_ENTRY', payload: entry });
+  const updateEntry = async ({ _id, description, status }: Entry) => {
+    try {
+      const { data } = await entryService.put<Entry>(`/entry/${_id}`, { description, status });
+
+      dispatch({ type: 'UPDATE_ENTRY', payload: data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getEntries = async () => {
+    const { data } = await entryService.get<Entry[]>('/entry');
+    dispatch({ type: 'SET_ENTRIES', payload: data });
+  };
+
+  useEffect(() => {
+    getEntries();
+  }, []);
 
   return (
     <EntryContext.Provider
