@@ -27,6 +27,11 @@ export const entrieReducer = (state: EntryStateType, action: EntryActionType): E
         ...state,
         entries: <Entry[]>action.payload,
       };
+    case 'DELETE_ENTRY':
+      return {
+        ...state,
+        entries: state.entries.filter((entry) => entry._id !== (<Entry>action.payload)._id),
+      };
 
     default:
       return state;

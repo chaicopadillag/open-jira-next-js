@@ -2,8 +2,9 @@ import { Entry } from '../interfaces';
 
 export type EntryContextState = {
   entries: Entry[];
-  addEntry: (entry: string) => void;
-  updateEntry: (entry: Entry) => void;
+  addEntry: (entry: string) => Promise<boolean>;
+  updateEntry: (entry: Entry) => Promise<boolean>;
+  deleteEntry: (entry: Entry) => Promise<boolean>;
 };
 
 export type EntryStateType = {
@@ -11,6 +12,6 @@ export type EntryStateType = {
 };
 
 export type EntryActionType = {
-  type: 'SET_ENTRIES' | 'ADD_ENTRY' | 'UPDATE_ENTRY';
+  type: 'SET_ENTRIES' | 'ADD_ENTRY' | 'UPDATE_ENTRY' | 'DELETE_ENTRY';
   payload: Entry | Entry[];
 };

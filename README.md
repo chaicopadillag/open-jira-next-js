@@ -8,3 +8,10 @@ docker-compose up -d
 ```
 
 - El -d, significa **detached**
+
+## Send DB Seed Method Get
+
+```
+http://localhost:3000/api/seed
+
+```

@@ -3,8 +3,10 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import React, { ChangeEvent, useContext, useState } from 'react';
 import { EntryContext, UIContext } from '../../contexts';
+import { useSnackbar } from 'notistack';
 
 export const NewEntry = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const [description, setDescription] = useState<string>('');
   const [touch, setTouch] = useState<boolean>(false);
 
@@ -13,13 +15,32 @@ export const NewEntry = () => {
 
   const handleChangeDescription = (e: ChangeEvent<HTMLInputElement>) => setDescription(e.target.value);
 
-  const saveEntry = () => {
+  const saveEntry = async () => {
     if (description.length < 3) return;
 
-    addEntry(description);
-    setDescription('');
-    setIsAdding(false);
-    setTouch(false);
+    const res = await addEntry(description);
+    if (res) {
+      enqueueSnackbar('Entry add success!!!', {
+        variant: 'success',
+        autoHideDuration: 1500,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
+      });
+      setDescription('');
+      setIsAdding(false);
+      setTouch(false);
+    } else {
+      enqueueSnackbar('Sorry, error in created entry', {
+        variant: 'error',
+        autoHideDuration: 1500,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right',
+        },
+      });
+    }
   };
 
   return (

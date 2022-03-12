@@ -21,9 +21,9 @@ export default function hanlder(req: NextApiRequest, res: NextApiResponse<Data>)
 }
 
 const get = async (res: NextApiResponse<Data>) => {
-  await db.connectToMongoDb();
-  const entries = await Entry.find().sort({ createdAt: 'ascending' });
-  await db.disconnectOfMongoDb();
+  await db.connect();
+  const entries = await Entry.find().sort({ createdAt: -1 });
+  await db.disconnect();
   return res.status(200).json(entries);
 };
 
@@ -34,13 +34,13 @@ const post = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     createdAt: Date.now(),
   });
   try {
-    await db.connectToMongoDb();
+    await db.connect();
     await newEntry.save();
-    await db.disconnectOfMongoDb();
+    await db.disconnect();
 
     return res.status(201).json(newEntry);
   } catch (error) {
-    await db.disconnectOfMongoDb();
+    await db.disconnect();
     return res.status(500).json({ message: 'Error al crear entrada' });
   }
 };

@@ -12,11 +12,11 @@ const dbSeed = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     return res.status(403).json({ message: 'Forbidden in production' });
   }
 
-  await db.connectToMongoDb();
+  await db.connect();
 
   await Entry.deleteMany({});
   await Entry.insertMany(entrySeeder);
-  await db.disconnectOfMongoDb();
+  await db.disconnect();
 
   res.status(200).json({ message: 'Proceso finalizado correctamente' });
 };
